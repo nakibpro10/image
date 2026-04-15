@@ -8,13 +8,16 @@ __v0_jsx-dev-runtime.ts
 next.user-config.*
 
 # Environment variables
+.env
+.env.*
 .env*.local
+.dev.vars
+.dev.vars.*
 
 # Common ignores
-node_modules
+node_modules/
 .next/
+.open-next/
+.wrangler/
 .DS_Store
 .vercel
-.open-next
-.wrangler
-.dev.vars
