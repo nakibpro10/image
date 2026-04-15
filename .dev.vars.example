@@ -1,0 +1,5 @@
+NEXTJS_ENV=development
+
+# Copy your app env values from .env.local to Cloudflare secrets / vars.
+# Public vars can be set in Cloudflare dashboard or wrangler.jsonc vars.
+# Secret values should be added with `pnpm wrangler secret put <NAME>`.
