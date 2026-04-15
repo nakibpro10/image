@@ -1,16 +1,17 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { Suspense, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Loader2, ShieldCheck, KeyRound } from "lucide-react"
 import { toast } from "sonner"
 
-export default function TwoFactorPage() {
+function TwoFactorContent() {
   const [code, setCode] = useState("")
   const [loading, setLoading] = useState(false)
   const [checkingUser, setCheckingUser] = useState(true)
+
   const router = useRouter()
   const searchParams = useSearchParams()
   const nextUrl = useMemo(() => searchParams.get("next") || "/dashboard", [searchParams])
@@ -33,6 +34,7 @@ export default function TwoFactorPage() {
     }
 
     checkUser()
+
     return () => {
       mounted = false
     }
@@ -50,6 +52,7 @@ export default function TwoFactorPage() {
       })
 
       const data = await res.json()
+
       if (!res.ok) {
         toast.error(data.error || "Failed to verify 2FA")
         return
@@ -101,6 +104,7 @@ export default function TwoFactorPage() {
               <label htmlFor="code" className="text-sm font-medium text-foreground">
                 Verification code
               </label>
+
               <div className="relative">
                 <KeyRound className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <input
@@ -130,10 +134,32 @@ export default function TwoFactorPage() {
           </div>
 
           <div className="text-center text-sm text-muted-foreground">
-            Wrong account? <Link href="/auth/login" className="text-primary hover:underline">Back to login</Link>
+            Wrong account?{" "}
+            <Link href="/auth/login" className="text-primary hover:underline">
+              Back to login
+            </Link>
           </div>
         </div>
       </div>
     </main>
+  )
+}
+
+function TwoFactorFallback() {
+  return (
+    <main className="min-h-screen flex items-center justify-center bg-background">
+      <div className="glass-panel rounded-3xl p-8 flex items-center gap-3">
+        <Loader2 className="w-5 h-5 animate-spin text-primary" />
+        <span>Loading 2FA...</span>
+      </div>
+    </main>
+  )
+}
+
+export default function TwoFactorPage() {
+  return (
+    <Suspense fallback={<TwoFactorFallback />}>
+      <TwoFactorContent />
+    </Suspense>
   )
 }
